@@ -1,0 +1,9 @@
+api_platform:
+  title: 'Municipal API'
+  description: 'This API contains all endpoint which make up the visual representation of a municipalitys webpage or mobile app'
+  mapping:
+    paths: ['%kernel.project_dir%/src/Entity']
+  patch_formats:
+    json: ['application/merge-patch+json']
+  swagger:
+    versions: [3]
