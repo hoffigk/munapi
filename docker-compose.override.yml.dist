@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+
+  apache:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.muninapi_apache.entrypoints=web"
+      - "traefik.http.routers.muninapi_apache.rule=Host(`muninapi.172.17.0.1.nip.io`)"
+      - "traefik.http.services.muninapi_apache.loadbalancer.server.port=80"
+
+  mysql:
+    ports:
+      - "33061:3306"

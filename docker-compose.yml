@@ -1,0 +1,71 @@
+version: "3.7"
+
+x-php_envs:
+  &default-php-envs
+  HOME: /usr/src/app
+  PHP_DATE_TIMEZONE: Europe/Berlin
+  PHP_MEMORY_LIMIT: 2048M
+
+services:
+
+  apache:
+    build:
+      context: .docker/apache
+      dockerfile: Dockerfile
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./:/usr/src/app:cached
+    networks:
+      - default
+      - dev-traefik
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+      target: php-fpm
+      args:
+        VERSION: alpine
+    environment:
+      <<: *default-php-envs
+    volumes:
+      - ./:/usr/src/app:cached
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: db-user
+      MYSQL_DATABASE: db-name
+      MYSQL_PASSWORD: db-password
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./.docker/mysql/mysql.cnf:/etc/mysql/conf.d/docker.cnf
+
+  php-cli:
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+      target: php-cli
+      args:
+        VERSION: alpine
+    user: www-data
+    entrypoint: bash
+    volumes:
+      - ./:/usr/src/app:cached
+      - ./.docker/cache/composer:/composer/cache/
+    environment:
+      <<: *default-php-envs
+    depends_on:
+      - apache
+      - mysql
+
+volumes:
+  mysql:
+
+networks:
+  dev-traefik:
+    external: true

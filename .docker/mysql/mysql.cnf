@@ -1,0 +1,4 @@
+[mysqld]
+max_allowed_packet=100M
+net_buffer_length=1048576
+sql_mode=""

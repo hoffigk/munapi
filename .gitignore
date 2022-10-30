@@ -9,3 +9,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/docker-compose.override.yml
+/.bash_history
+/.docker/cache/
